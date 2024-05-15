@@ -11,6 +11,7 @@ import { BottomNavigation } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,7 @@ function MainNavigator() {
       onIndexChange={setIndex}
       renderScene={renderScene}
       shifting={true}
+      barStyle={{ backgroundColor: '#b5e9ff' }}
       renderIcon={({ route, color }) => (
         <MaterialCommunityIcons name={route.icon} color={color} size={24} />
       )}
@@ -45,22 +47,18 @@ function MainNavigator() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen name="Main" component={MainNavigator} options={{ headerShown: false }} />
-      </Stack.Navigator>
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-      </View>
-    </NavigationContainer>
+    <SafeAreaProvider>
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <MainNavigator />
+    </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
 });
