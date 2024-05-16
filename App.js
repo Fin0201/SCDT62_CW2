@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Activities from './components/Activities';
-import Login from './components/Login';
+import Login from './pages/Login';
 import Profile from './components/Profile';
-import Register from './components/Register';
+import Register from './pages/Register';
 import Workouts from './components/Workouts';
 import Home from './components/Home';
 import { BottomNavigation } from 'react-native-paper';
@@ -13,53 +13,28 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Updates from 'expo-updates';
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  //Set variables used when accessing Async Storage
-  const STORAGE_TOKEN = '@token'
-  const STORAGE_USER = '@user'
-  const STORAGE_NAME = '@name'
-
-  //Declare State Variables
-  const [token, setToken] = useState(null)
-  const [loginState, setLoginState] = useState(true)
-  const [returned, setReturned] = useState('')
-
+  const [user, setUser] = useState(null);
   const [index, setIndex] = useState(0);
 
-  const saveToken = async (result) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_TOKEN, result.token)
-      console.log('Token Set Successfully')
-
-      await AsyncStorage.setItem(STORAGE_USER, result.id)
-      console.log('ID set Successfully')
-
-      await AsyncStorage.setItem(STORAGE_NAME, result.firstName)
-
-      setToken(result.token)
-      return('Login Successfully Validated')
-    }
-    catch (e){
-      return('Failed to Validate Login')
-    }
-  }
-
-  const readToken = async () => {
-    try {
-      const asyncToken = await AsyncStorage.getItem(STORAGE_TOKEN)
-  
-      if(asyncToken !== null){
-        setToken(asyncToken)
+  useEffect(() => {
+    const checkStorage = async () => {
+      const storedUser = await AsyncStorage.getItem('user');
+      if (storedUser !== null) {
+        setUser(JSON.parse(storedUser));
+        console.log('User data is stored in AsyncStorage');
+      } else {
+        console.log('User data is not stored in AsyncStorage');
       }
-    }
-    catch (e){
-      console.log('Not Logged In')
-    }
-  }
-  
+    };
+
+    checkStorage();
+  }, []);
+
   const [routes] = useState([
     { key: 'home', title: 'Home', icon: 'home', color: '#6200ee' },
     { key: 'activities', title: 'Activities', icon: 'run', color: '#e91e63' },
@@ -74,14 +49,39 @@ export default function App() {
     profile: Profile,
   });
 
-  if (token === null){
+  const logoutUser = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      setCreateWorkoutActivities([]);
+      setUser([]);
+      setLoading(false);
+  
+      // Reload the app
+      await Updates.reloadAsync();
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  if (user === null){
     return (
-      <Register />
+      <NavigationContainer>
+      <Stack.Navigator initialRouteName="Register">
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+      </Stack.Navigator>
+    </NavigationContainer>
     )
   }
   else {
     return (
+      
       <SafeAreaProvider>
+        <View style={styles.logoutButton}>
+          <TouchableOpacity onPress={logoutUser}>
+            <MaterialCommunityIcons name="logout" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.container}>
           <StatusBar style="auto" />
             <BottomNavigation
@@ -104,5 +104,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+  },
+  logoutButton: {
+    position: 'absolute',
+    top: 30,
+    right: 10,
+    zIndex: 15,
   },
 });

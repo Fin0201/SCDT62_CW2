@@ -1,36 +1,50 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, Button, View, Alert } from 'react-native';
- 
-export default function RegisterScreen() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, TextInput, Button, View, Alert, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function Login({ navigation, route }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessages, setErrorMessages] = useState([]);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
+  //Declare State Variables
+  const [token, setToken] = useState(null)
+  const [loginState, setLoginState] = useState(true)
+  const [returned, setReturned] = useState('')
+
+  // This will display an alert if a message is set when navigating to this screen
+  useEffect(() => {
+    if (route.params?.message) {
+      Alert.alert('Success', route.params.message);
+    }
+  }, [route.params?.message]);
  
-  const handleRegister = async () => {
+  const handleLogin = async () => {
     try {
-      const response = await fetch('https://localhost:7267/api/auth/Register', {
+      const response = await fetch('https://localhost:7267/api/auth/Login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        body: JSON.stringify({ email, password }),
       });
  
       const data = await response.json();
- 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || 'Login failed');
       }
- 
-      setRegistrationSuccess(true); // Set registration success state
+
+      
+      
+      await AsyncStorage.setItem('user', JSON.stringify(data));
+
+      setLoginSuccess(true); // Set Login success state
       setErrorMessages([]); // Clear error messages
-      Alert.alert('Success', 'Registration successful!');
+      Alert.alert('Success', 'Login successful!');
     } catch (error) {
-      console.error('Registration error:', error);
-      setRegistrationSuccess(false); // Reset registration success state
+      console.error('Login error:', error);
+      setLoginSuccess(false); // Reset Login success state
       setErrorMessages([]);
  
       if (error instanceof SyntaxError) {
@@ -46,31 +60,19 @@ export default function RegisterScreen() {
         setErrorMessages(['Unknown error occurred']);
       }
  
-      Alert.alert('Error', 'Failed to register');
+      Alert.alert('Error', 'Failed to Login');
     }
   };
  
   return (
 <View style={styles.container}>
-<Text>Register</Text>
+<Text>Login</Text>
       {errorMessages.map((errorMessage, index) => (
 <Text key={index} style={styles.errorText}>{errorMessage}</Text>
       ))}
-      {registrationSuccess && (
-<Text style={styles.successText}>Registration successful! You can now login.</Text>
+      {loginSuccess && (
+<Text style={styles.successText}>Login successful!</Text>
       )}
-<TextInput
-        style={styles.input}
-        placeholder="First Name"
-        onChangeText={(text) => setFirstName(text)}
-        value={firstName}
-      />
-<TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        onChangeText={(text) => setLastName(text)}
-        value={lastName}
-      />
 <TextInput
         style={styles.input}
         placeholder="Email"
@@ -85,7 +87,10 @@ export default function RegisterScreen() {
         value={password}
         secureTextEntry
       />
-<Button title="Register" onPress={handleRegister} />
+<Button title="Login" onPress={handleLogin} />
+<TouchableOpacity onPress={() => navigation.navigate('Login')}>
+  <Text style={styles.linkText}>Don't have an account? Register</Text>
+</TouchableOpacity>
 </View>
   );
 }
@@ -112,5 +117,9 @@ const styles = StyleSheet.create({
   successText: {
     color: 'green',
     marginBottom: 10,
+  },
+  linkText: {
+    color: 'blue',
+    textDecorationLine: 'underline',
   },
 });
