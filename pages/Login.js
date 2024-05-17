@@ -8,11 +8,6 @@ export default function Login({ navigation, route }) {
   const [errorMessages, setErrorMessages] = useState([]);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
-  //Declare State Variables
-  const [token, setToken] = useState(null)
-  const [loginState, setLoginState] = useState(true)
-  const [returned, setReturned] = useState('')
-
   // This will display an alert if a message is set when navigating to this screen
   useEffect(() => {
     if (route.params?.message) {
@@ -39,9 +34,7 @@ export default function Login({ navigation, route }) {
       
       await AsyncStorage.setItem('user', JSON.stringify(data));
 
-      setLoginSuccess(true); // Set Login success state
-      setErrorMessages([]); // Clear error messages
-      Alert.alert('Success', 'Login successful!');
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Login error:', error);
       setLoginSuccess(false); // Reset Login success state
