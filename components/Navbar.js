@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, StyleSheet } from 'react-native';
-import NavItem from './NavItem';
+import { StyleSheet, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import NavItem from './NavIcon';
 
 // Navigation Bar Element
 export default function Navbar({ onSelect, currentPage }) {
@@ -18,11 +19,11 @@ export default function Navbar({ onSelect, currentPage }) {
   
   return (
     // Navigation bar image background with Home, Workouts and Activity buttons
-    <ImageBackground source={require('../../assets/BarBackground.png')} style={styles.navBar}>
-      <NavItem handlePress={handlePress} selectedTab={selectedTab} imageSource={require('../../assets/Home.png')}itemName='Home' styles={styles} />
-      <NavItem handlePress={handlePress} selectedTab={selectedTab} imageSource={require('../../assets/Workouts.png')} itemName='Workouts' styles={styles} />
-      <NavItem handlePress={handlePress} selectedTab={selectedTab} imageSource={require('../../assets/Activities.png')} itemName='Activities' styles={styles} />
-    </ImageBackground>
+    <View style={styles.navBar}>
+      <NavIcon handlePress={handlePress} selectedTab={selectedTab} icon="home" itemName='Home' styles={styles} />
+      <NavIcon handlePress={handlePress} selectedTab={selectedTab} icon="fitness-center" itemName='Workouts' styles={styles} />
+      <NavIcon handlePress={handlePress} selectedTab={selectedTab} icon="directions-run" itemName='Activities' styles={styles} />
+    </View>
   );
 }
 
