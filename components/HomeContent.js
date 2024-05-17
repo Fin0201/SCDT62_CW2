@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
-export default function Profile() {
+export default function IndexContent() {
     return (
         <View style={styles.container}>
-        <Text>Profile</Text>
+        <Text>Activities</Text>
         </View>
     );
 }
