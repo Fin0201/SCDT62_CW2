@@ -29,8 +29,6 @@ export default function Login({ navigation, route }) {
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-
-      
       
       await AsyncStorage.setItem('user', JSON.stringify(data));
 

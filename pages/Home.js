@@ -6,15 +6,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { StatusBar } from 'expo-status-bar';
 import { BottomNavigation } from 'react-native-paper';
 
-import Activities from '../components/Activities';
-import Profile from '../components/Profile';
-import Workouts from '../components/Workouts';
-import Index from '../components/Index';
+import Navbar from '../components/Navbar';
 
 
 export default function Home({ navigation }) {
     const [user, setUser] = useState(null);
-    const [index, setIndex] = useState(0);
 
     useEffect(() => {
         const checkStorage = async () => {
@@ -29,20 +25,6 @@ export default function Home({ navigation }) {
 
         checkStorage();
     }, []);
-
-    const [routes] = useState([
-        { key: 'index', title: 'Index', icon: 'index', color: '#6200ee' },
-        { key: 'activities', title: 'Activities', icon: 'run', color: '#e91e63' },
-        { key: 'workouts', title: 'Workouts', icon: 'dumbbell', color: '#e91e63' },
-        { key: 'profile', title: 'Profile', icon: 'account-circle', color: '#e91e63' },
-    ]);
-
-    const renderScene = BottomNavigation.SceneMap({
-        index: Index,
-        activities: Activities,
-        workouts: Workouts,
-        profile: Profile,
-    });
 
     const logoutUser = async () => {
         try {
@@ -69,19 +51,7 @@ export default function Home({ navigation }) {
                     <MaterialCommunityIcons name="logout" size={24} color="black" />
                 </TouchableOpacity>
                 </View>
-                <View style={styles.container}>
-                <StatusBar style="auto" />
-                    <BottomNavigation
-                    navigationState={{ index, routes }}
-                    onIndexChange={setIndex}
-                    renderScene={renderScene}
-                    shifting={true}
-                    barStyle={{ backgroundColor: '#b5e9ff' }}
-                    renderIcon={({ route, color }) => (
-                        <MaterialCommunityIcons name={route.icon} color={color} size={24} />
-                    )}
-                    />
-                </View>
+                <Navbar />
             </SafeAreaProvider>
         );
     }
