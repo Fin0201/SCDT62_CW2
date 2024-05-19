@@ -85,9 +85,8 @@ export default function RegisterScreen({ navigation }) {
         secureTextEntry
       />
 <Button title="Register" onPress={handleRegister} />
-<TouchableOpacity onPress={() => navigation.navigate('Login')}>
-  <Text style={styles.linkText}>Already have an account? Log in</Text>
-</TouchableOpacity>
+<Text style={styles.linkText}>Already have an account?</Text>
+<Button title="Login" onPress={() => navigation.navigate('Login')} />
 </View>
   );
 }
@@ -116,7 +115,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   linkText: {
-    color: 'blue',
     textDecorationLine: 'underline',
   },
 });

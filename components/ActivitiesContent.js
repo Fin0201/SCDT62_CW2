@@ -1,38 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Button, Alert, ActivityIndicator, ScrollView, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import { getUser } from '../AppStorage';
-import { Card, Overlay, Header } from 'react-native-elements';
-import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { Card, Overlay } from 'react-native-elements';
+import FlashMessage, { showMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
+
+import CreateActivity from './CreateAcvitity';
+import EditActivity from './EditActivity';
 
 export default function ActivitiesContent() {
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [selectActivity, setSelectActivity] = useState('');
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userAccount = await getUser();
-      if (userAccount) {
-        console.log('User found');
-        setUser(userAccount);
-      }
-      setLoading(false);
-    };
-    fetchUser();
-
-    const fetchActivities = async () => {
+    const fetchUserDataAndActivities = async () => {
       try {
-        const response = await fetch(`https://localhost:7267/api/activities/user/${user.id}`);
-        const data = await response.json();
-        setActivities(data);
+        const userAccount = await getUser();
+        
+        // If user is fetched successfully
+        if (userAccount) {
+          console.log('User found');
+          setUser(userAccount);
+          
+          // Fetch all activities associated with the current user
+          const response = await fetch(`https://localhost:7267/api/activities/user/${userAccount.id}`);
+          const responseJson = await response.json();
+          setActivities(responseJson);
+        }
+  
       } catch (error) {
-        console.error('Error fetching activities:', error);
-        setActivities([]);
+        console.error('Error fetching user or activities:', error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchActivities();
+  
+    fetchUserDataAndActivities();
   }, []);
+
+  const fetchUser = async () => {
+    const userAccount = await getUser();
+    if (userAccount) {
+      console.log('User found');
+      setUser(userAccount);
+    }
+    setLoading(false);
+  }
 
   if (loading) {
     return <Text style={styles.loadingText}>Loading...</Text>
@@ -74,8 +91,6 @@ export default function ActivitiesContent() {
         type: "danger",
       });
     }
-
-    
   }
 
   let activitiesMap = activities.map((val, key) => {
@@ -85,44 +100,35 @@ export default function ActivitiesContent() {
               <Card.Title h4>{val.name} ({val.type})</Card.Title>
               <Card.Divider />
               <View style={{textAlign: 'center', justifyContent: 'flex-start'}}>
-                  <Text style={{fontSize: 16}}>Description: {val.description}</Text>
+                <Text style={{fontSize: 16}}>Description: {val.description}</Text>
               </View>     
               <View style={{justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20}}>
-                  <Button title="Edit Activity" color={'orange'} onPress={() => {setToEdit(val); setEditVisible(true);}} /> 
-                  <Button title="Delete Activity" color={'#ff4034'} onPress={() => deleteConfirm(val)} />
+                <Button title="Edit Activity" color='orange' onPress={() => {setSelectActivity(val); setShowEdit(true)}} /> 
+                <Button title="Delete Activity" color='#ff4034' onPress={() => deleteConfirm(val)} />
               </View>
           </Card>
       </View>
     )
   })
 
-  return (
+  return (    
     <View style={styles.container}>
-        <Appbar.Header style={{width: Dimensions.get('window').width, backgroundColor: '#f06c64'}}>
-           <Appbar.Action icon="plus" onPress={toggleCreate} accessibiltyLevel />
-           <Appbar.Content title="Activities" subtitle={'Activities are used when creating a Workout'} />               
-       </Appbar.Header>
-        <Overlay isVisible={createVisible} onBackdropPress={toggleCreate} overlayStyle={{backgroundColor: '#f8c4c4', borderColor: '#47504f', borderWidth: 2, borderRadius: 15,}}>
-            <Create params={user} />
-            <View style={{marginTop: 30}}>
-                <Button color={'#FF6961'} onPress={() => toggleCreate()} title={"Go Back"} />
-            </View>
+        <Appbar.Header style={{width: Dimensions.get('window').width}}>
+           <Appbar.Content title="Activities" />               
+        </Appbar.Header>
+        <Overlay isVisible={showCreate} onBackdropPress={() => setShowCreate(false)}>
+          <CreateActivity params={user.id} onActivitySuccess={() => setShowCreate(false)} />
         </Overlay>
-        <Overlay isVisible={editVisible} onBackdropPress={toggleEdit} overlayStyle={{backgroundColor: '#f8c4c4', borderColor: '#47504f', borderWidth: 2, borderRadius: 15,}} >
-            <Edit activ={toEdit} />
-            <View style={{marginTop: 30}}>
-                <Button color={'#FF6961'} onPress={() => toggleEdit()} title={"Go Back"} />
-            </View>
+        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)}>
+          <EditActivity params={selectActivity} onActivitySuccess={() => setShowEdit(false)} />
         </Overlay>
         <ScrollView style={styles.scrolling}>
+          <Button title="Create" color='#4bb543' onPress={() => setShowCreate(true)} />
             {activitiesMap}
         </ScrollView>
-
-
         <FlashMessage position="top" />
     </View>
-)
-
+  )
 }
 
 const styles = StyleSheet.create({
@@ -136,4 +142,4 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
     },
-  });
+});

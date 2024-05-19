@@ -65,7 +65,7 @@ export default function Home({ navigation }) {
     return (
         <SafeAreaProvider>
             <View style={styles.logoutButton}>
-                <TouchableOpacity onPress={logoutUser}>
+                <TouchableOpacity onPress={logoutConfirm}>
                     <MaterialCommunityIcons name="logout" size={24} color="black" />
                 </TouchableOpacity>
             </View>

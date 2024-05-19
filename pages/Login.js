@@ -79,9 +79,8 @@ export default function Login({ navigation, route }) {
         secureTextEntry
       />
 <Button title="Login" onPress={handleLogin} />
-<TouchableOpacity onPress={() => navigation.navigate('Login')}>
-  <Text style={styles.linkText}>Don't have an account? Register</Text>
-</TouchableOpacity>
+<Text style={styles.linkText}>Don't have an account?</Text>
+<Button title="Register" onPress={() => navigation.navigate('Register')} />
 </View>
   );
 }
@@ -110,7 +109,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   linkText: {
-    color: 'blue',
     textDecorationLine: 'underline',
   },
 });
