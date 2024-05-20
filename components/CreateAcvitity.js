@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
-export default function CreateActivity(params) {
+export default function CreateActivity({ params, onActivitySuccess }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
-    const [userId, setUserId] = useState(params.params);
+    const [userId, setUserId] = useState(params);
     const [activitySuccess, setActivitySuccess] = useState(false);
     
-    const createActivity = async ({ params, onActivitySuccess }) => {
+    const createActivity = async () => {
         try {
+            console.log(JSON.stringify({ name, description, type, userId }))
             const response = await fetch('https://localhost:7267/api/activities', {
                 method: 'POST',
                 headers: {
@@ -18,28 +19,22 @@ export default function CreateActivity(params) {
                 },
                 body: JSON.stringify({ name, description, type, userId }),
             });
-            
+
             const data = await response.json();
-            
+
             if (!response.ok) {
                 throw new Error(data.message || 'Activity creation failed');
             }
-            
+
             setActivitySuccess(true);
             showMessage({
                 message: 'Activity created successfully',
                 type: 'success',
             });
 
-            // Close the overlay
             onActivitySuccess();
         } catch (error) {
-            console.error('Activity creation error:', error);
-            setActivitySuccess(false);
-            showMessage({
-                message: 'Failed to create activity',
-                type: 'danger',
-            });
+            Alert.alert('Error', error.message);
         }
     };
 
@@ -65,7 +60,7 @@ export default function CreateActivity(params) {
                 onChangeText={setType}
             />
             <Button title="Create Activity" onPress={createActivity} />
-            <Button title="Cancel" color='#ff4034' onPress={params.onActivitySuccess} />
+            <Button title="Cancel" color='#ff4034' onPress={onActivitySuccess} />
         </View>
     );
 }

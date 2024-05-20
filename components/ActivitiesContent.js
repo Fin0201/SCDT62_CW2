@@ -60,7 +60,7 @@ export default function ActivitiesContent() {
       "Are you sure?",
       `Are you sure you want to delete ${val.name}?`,
       [
-        {text: "Delete", onPress: () => deleteActivity(val.id)}, {text: "Back"}
+        {text: "Delete", onPress: () => {deleteActivity(val.id)}}, {text: "Back"}
       ]
     )
   }

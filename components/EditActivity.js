@@ -2,29 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
-export default function EditActivity(params) {
-    const [id, setId] = useState(params.params.id);
-    const [name, setName] = useState(params.params.name);
-    const [description, setDescription] = useState(params.params.description);
-    const [type, setType] = useState(params.params.type);
+export default function EditActivity({ params, onActivitySuccess }) {
+    const [id, setId] = useState(params.id);
+    const [name, setName] = useState(params.name);
+    const [description, setDescription] = useState(params.description);
+    const [type, setType] = useState(params.type);
 
     const [activitySuccess, setActivitySuccess] = useState(false);
     
-    const EditActivity = async ({ onActivitySuccess }) => {
+    const editActivity = async () => {
         try {
-            let aaaa = JSON.stringify({
-                "id": id,
-                "name": name,
-                "description": description,
-                "type": type
-            });
-            console.log(JSON.stringify({
-                id,
-                userID: params.params.id,
-                name,
-                type,
-                description,
-              }));
             const response = await fetch(`https://localhost:7267/api/activities/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -32,24 +19,23 @@ export default function EditActivity(params) {
                 },
                 body: JSON.stringify({
                     id,
-                    userID: params.params.id,
                     name,
-                    type,
                     description,
-                  }),
+                    type,
+                    userID: params.userID
+                }),
             });
             
             if (!response.ok) {
                 throw new Error(data.message || 'Edit failed');
             }
-            
+
             setActivitySuccess(true);
             showMessage({
                 message: 'Activity edited successfully',
                 type: 'success',
             });
 
-            // Close the overlay
             onActivitySuccess();
         } catch (error) {
             console.error('Edit error:', error);
@@ -68,22 +54,22 @@ export default function EditActivity(params) {
                 style={styles.input}
                 placeholder="Name"
                 onChangeText={setName}
-                defaultValue={params.params.name}
+                defaultValue={params.name}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Description"
                 onChangeText={setDescription}
-                defaultValue={params.params.description}
+                defaultValue={params.description}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Type"
                 onChangeText={setType}
-                defaultValue={params.params.type}
+                defaultValue={params.type}
             />
-            <Button title="Save" onPress={EditActivity} />
-            <Button title="Cancel" color='#ff4034' onPress={params.onActivitySuccess} />
+            <Button title="Save" onPress={editActivity} />
+            <Button title="Cancel" color='#ff4034' onPress={onActivitySuccess} />
         </View>
     );
 }
@@ -96,8 +82,9 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        width: 200,
+        width: Dimensions.get('window').width - 40,
         margin: 12,
         borderWidth: 1,
+        padding: 10,
     },
 });
