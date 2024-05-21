@@ -101,7 +101,7 @@ export default function ActivitiesContent() {
 
   return (    
     <View style={styles.container}>
-        <Appbar.Header style={{width: Dimensions.get('window').width}}>
+        <Appbar.Header style={styles.header}>
            <Appbar.Content title="Activities" />               
         </Appbar.Header>
         <Overlay isVisible={showCreate} onBackdropPress={() => setShowCreate(false)}>
@@ -110,9 +110,11 @@ export default function ActivitiesContent() {
         <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)}>
           <EditActivity selectedActivity={selectActivity} onActivitySuccess={() => { fetchActivities(); setShowEdit(false) }} />
         </Overlay>
-        <ScrollView style={styles.scrolling}>
+        <View style={styles.createButton}>
           <Button title="Create" color='#4bb543' onPress={() => setShowCreate(true)} />
-            {activitiesMap}
+        </View>
+        <ScrollView style={styles.scroll}>
+          {activitiesMap}
         </ScrollView>
         <FlashMessage position="top" />
     </View>
@@ -120,18 +122,31 @@ export default function ActivitiesContent() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    loadingText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#BAF1FF',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  header: {
+    width: Dimensions.get('window').width,
+    backgroundColor: '#4bb5e3',
+  },
+  scroll: {
+    width: Dimensions.get('window').width,
+  },
+  createButton: {
+    marginTop: 30,
+    marginBottom: 10,
+    width: 300,
+  },
 });

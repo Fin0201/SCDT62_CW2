@@ -3,28 +3,24 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StatusBar } from 'expo-status-bar';
 import { BottomNavigation } from 'react-native-paper';
 
 import alert from '../components/alert';
-import HomeContent from '../components/HomeContent';
-import ActivitiesContent from '../components/ActivitiesContent';
-import WorkoutsContent from '../components/WorkoutsContent';
+import Activities from '../components/Activities';
+import Workouts from '../components/Workouts';
 
 export default function Home({ navigation }) {
     const [user, setUser] = useState([]);
     const [index, setIndex] = useState(0);
 
     const [routes] = useState([
-        { key: 'home', title: 'Home', icon: 'home' },
         { key: 'activities', title: 'Activities', icon: 'run' },
         { key: 'workouts', title: 'Workouts', icon: 'dumbbell' },
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
-        home: HomeContent,
-        activities: ActivitiesContent,
-        workouts: WorkoutsContent,
+        activities: Activities,
+        workouts: Workouts,
     });
 
     const logoutConfirm = () => {
@@ -68,13 +64,12 @@ export default function Home({ navigation }) {
                 </TouchableOpacity>
             </View>
             <View style={styles.container}>
-                <StatusBar style="auto" />
                 <BottomNavigation
                     navigationState={{ index, routes }}
                     onIndexChange={setIndex}
                     renderScene={renderScene}
-                    shifting={true}
-                    barStyle={{ backgroundColor: '#b5e9ff' }}
+                    shifting={false}
+                    barStyle={{ backgroundColor: '#4bb5e3' }}
                     renderIcon={({ route, color }) => (
                         <MaterialCommunityIcons name={route.icon} color={color} size={24} />
                     )}
@@ -91,7 +86,7 @@ const styles = StyleSheet.create({
     },
     logoutButton: {
         position: 'absolute',
-        top: 30,
+        top: 20,
         right: 10,
         zIndex: 15,
     },
