@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -29,7 +29,9 @@ export default function App() {
   }, []);
 
   if (loading) {
-    return <Text style={styles.loadingText}>Loading...</Text>
+    <View style={styles.loadingContainer}>
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
   }
   
   return (
@@ -57,9 +59,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
-  loadingText: {
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

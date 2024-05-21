@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Button, ScrollView, Dimensions } from 'react-native';
 import { getUser } from '../AppStorage';
 import { Card, Overlay } from 'react-native-elements';
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
-
-import CreateActivity from './CreateAcvitity';
+import alert from './alert';
+import CreateActivity from './CreateActivity';
 import EditActivity from './EditActivity';
 
 export default function ActivitiesContent() {
-  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
@@ -17,52 +16,37 @@ export default function ActivitiesContent() {
   const [selectActivity, setSelectActivity] = useState('');
 
   useEffect(() => {
-    const fetchUserDataAndActivities = async () => {
-      try {
-        const userAccount = await getUser();
-        
-        // If user is fetched successfully
-        if (userAccount) {
-          console.log('User found');
-          setUser(userAccount);
-          
-          // Fetch all activities associated with the current user
-          const response = await fetch(`https://localhost:7267/api/activities/user/${userAccount.id}`);
-          const responseJson = await response.json();
-          setActivities(responseJson);
-        }
-  
-      } catch (error) {
-        console.error('Error fetching user or activities:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchUserDataAndActivities();
+    fetchActivities();
   }, []);
 
-  const fetchUser = async () => {
-    const userAccount = await getUser();
-    if (userAccount) {
-      console.log('User found');
-      setUser(userAccount);
+  const fetchActivities = async () => {
+    try {
+      // Fetch all activities
+      const response = await fetch(`https://localhost:7267/api/activities`);
+      const responseJson = await response.json();
+      setActivities(responseJson);
     }
-    setLoading(false);
-  }
+    catch (error) {
+      console.error('Error fetching activities:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
-    return <Text style={styles.loadingText}>Loading...</Text>
+    <View style={styles.loadingContainer}>
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
   }
 
   const deleteConfirm = (val) => {
-    return Alert.alert(
+    alert(
       "Are you sure?",
       `Are you sure you want to delete ${val.name}?`,
       [
-        {text: "Delete", onPress: () => {deleteActivity(val.id)}}, {text: "Back"}
-      ]
-    )
+        {text: "Delete", onPress: () => {deleteActivity(val.id)}},
+        {text: "Cancel", style: "cancel", onPress: () => console.log('Cancel Pressed')}
+    ]);
   }
 
   const deleteActivity = async (activityId) => {
@@ -84,6 +68,9 @@ export default function ActivitiesContent() {
         type: "success",
       });
 
+      // Remove the activity from the state directly
+      setActivities((prevActivities) => prevActivities.filter(activity => activity.id !== activityId));
+
     } catch (error) {
       console.error('Error deleting activity:', error);
       showMessage({
@@ -97,11 +84,12 @@ export default function ActivitiesContent() {
     return (
       <View key={key}> 
           <Card key={key} style={styles.item} containerStyle={styles.itemContainer}>
-              <Card.Title h4>{val.name} ({val.type})</Card.Title>
+              <Card.Title h4>{val.name}</Card.Title>
               <Card.Divider />
               <View style={{textAlign: 'center', justifyContent: 'flex-start'}}>
                 <Text style={{fontSize: 16}}>Description: {val.description}</Text>
-              </View>     
+                <Text style={{fontSize: 16}}>Type: {val.type}</Text>
+              </View>
               <View style={{justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20}}>
                 <Button title="Edit Activity" color='orange' onPress={() => {setSelectActivity(val); setShowEdit(true)}} /> 
                 <Button title="Delete Activity" color='#ff4034' onPress={() => deleteConfirm(val)} />
@@ -117,10 +105,10 @@ export default function ActivitiesContent() {
            <Appbar.Content title="Activities" />               
         </Appbar.Header>
         <Overlay isVisible={showCreate} onBackdropPress={() => setShowCreate(false)}>
-          <CreateActivity params={user.id} onActivitySuccess={() => setShowCreate(false)} />
+          <CreateActivity onActivitySuccess={() => { fetchActivities(); setShowCreate(false) }} />
         </Overlay>
         <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)}>
-          <EditActivity params={selectActivity} onActivitySuccess={() => setShowEdit(false)} />
+          <EditActivity selectedActivity={selectActivity} onActivitySuccess={() => { fetchActivities(); setShowEdit(false) }} />
         </Overlay>
         <ScrollView style={styles.scrolling}>
           <Button title="Create" color='#4bb543' onPress={() => setShowCreate(true)} />
@@ -137,9 +125,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-    loadingText: {
+    loadingContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    loadingText: {
+      fontSize: 18,
+      fontWeight: 'bold',
     },
 });

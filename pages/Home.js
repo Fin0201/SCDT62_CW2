@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { BottomNavigation } from 'react-native-paper';
 
+import alert from '../components/alert';
 import HomeContent from '../components/HomeContent';
 import ActivitiesContent from '../components/ActivitiesContent';
 import WorkoutsContent from '../components/WorkoutsContent';
-
 
 export default function Home({ navigation }) {
     const [user, setUser] = useState([]);
@@ -28,16 +28,14 @@ export default function Home({ navigation }) {
     });
 
     const logoutConfirm = () => {
-        return (
-            <SafeAreaProvider>
-                {Alert.alert(
-                "Are you sure you want to logout?",
-                [
-                    {text: "Logout", onPress: () => logoutUser()}, {text: "Cancel"},
-                ]
-                )}
-            </SafeAreaProvider>
-        )
+        alert(
+            "Logout",
+            "Are you sure you want to logout?",
+            [
+                { text: "Cancel", style: "cancel", onPress: () => console.log('Cancel Pressed') },
+                { text: "Logout", onPress: () => logoutUser() },
+            ]
+        );
     }
 
     const logoutUser = async () => {
@@ -70,16 +68,16 @@ export default function Home({ navigation }) {
                 </TouchableOpacity>
             </View>
             <View style={styles.container}>
-            <StatusBar style="auto" />
-            <BottomNavigation
-                navigationState={{ index, routes }}
-                onIndexChange={setIndex}
-                renderScene={renderScene}
-                shifting={true}
-                barStyle={{ backgroundColor: '#b5e9ff' }}
-                renderIcon={({ route, color }) => (
-                    <MaterialCommunityIcons name={route.icon} color={color} size={24} />
-                )}
+                <StatusBar style="auto" />
+                <BottomNavigation
+                    navigationState={{ index, routes }}
+                    onIndexChange={setIndex}
+                    renderScene={renderScene}
+                    shifting={true}
+                    barStyle={{ backgroundColor: '#b5e9ff' }}
+                    renderIcon={({ route, color }) => (
+                        <MaterialCommunityIcons name={route.icon} color={color} size={24} />
+                    )}
                 />
             </View>
         </SafeAreaProvider>
@@ -96,5 +94,5 @@ const styles = StyleSheet.create({
         top: 30,
         right: 10,
         zIndex: 15,
-      },
+    },
 });

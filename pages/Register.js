@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, Button, View, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, View, Alert } from 'react-native';
  
 export default function RegisterScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');

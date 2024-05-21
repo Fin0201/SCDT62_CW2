@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
-export default function CreateActivity({ params, onActivitySuccess }) {
+export default function CreateActivity({ onActivitySuccess }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
-    const [userId, setUserId] = useState(params);
     const [activitySuccess, setActivitySuccess] = useState(false);
     
     const createActivity = async () => {
         try {
-            console.log(JSON.stringify({ name, description, type, userId }))
+            console.log(JSON.stringify({ name, description, type }))
             const response = await fetch('https://localhost:7267/api/activities', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, description, type, userId }),
+                body: JSON.stringify({ name, description, type }),
             });
 
             const data = await response.json();
@@ -40,19 +39,22 @@ export default function CreateActivity({ params, onActivitySuccess }) {
 
     return (
         <View style={styles.container}>
-            <Text>Create Activity</Text>
+            <Text style={styles.title}>Create Activity</Text>
+            <Text style={styles.heading}>Name</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
                 onChangeText={setName}
             />
+            <Text style={styles.heading}>Description</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Description"
                 value={description}
                 onChangeText={setDescription}
             />
+            <Text style={styles.heading}>Type</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Type"
@@ -78,4 +80,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
     },
+    title: {
+        fontSize: 24,
+        textAlign: 'center',
+    },
+    heading: {
+        textAlign: 'center',
+        fontSize: 16,
+        marginBottom: -7,
+        marginTop: 5,
+        width: 300,
+      },
 });
