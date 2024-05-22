@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getUser } from './AppStorage';
 
 import Register from './pages/Register';
@@ -14,7 +13,6 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState([]);
-  const [userFound, setUserFound] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,13 +21,10 @@ export default function App() {
       if (userAccount) {
         console.log('User found');
         setUser(userAccount);
-        setUserFound(true)
       }
       setLoading(false);
     };
     fetchUser();
-
-    console.log(user)
   }, []);
 
 
@@ -37,25 +32,25 @@ export default function App() {
     <View style={styles.loadingContainer}>
       <Text style={styles.loadingText}>Loading...</Text>
     </View>
+  } else {
+    return (
+      <NavigationContainer>
+        {user.length == 0 ? (
+          <Stack.Navigator initialRouteName='Register' screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Home" component={Home} />
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Login" component={Login} />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    )
   }
-  
-  return (
-    <NavigationContainer>
-      {!userFound ? (
-        <Stack.Navigator initialRouteName='Register' screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="Login" component={Login} />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
-  )
 }
 
 const styles = StyleSheet.create({

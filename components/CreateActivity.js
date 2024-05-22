@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Alert, Pressable, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { Appbar } from 'react-native-paper';
 
 export default function CreateActivity({ onActivitySuccess }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
-    const [activitySuccess, setActivitySuccess] = useState(false);
     
     const createActivity = async () => {
         try {
@@ -25,7 +25,6 @@ export default function CreateActivity({ onActivitySuccess }) {
                 throw new Error(data.message || 'Activity creation failed');
             }
 
-            setActivitySuccess(true);
             showMessage({
                 message: 'Activity created successfully',
                 type: 'success',
@@ -39,7 +38,9 @@ export default function CreateActivity({ onActivitySuccess }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create Activity</Text>
+            <Appbar.Header style={styles.header}>
+                <Appbar.Content title="Create Activity" titleStyle={{alignSelf: 'center'}} />               
+            </Appbar.Header>
             <Text style={styles.heading}>Name</Text>
             <TextInput
                 style={styles.input}
@@ -61,8 +62,12 @@ export default function CreateActivity({ onActivitySuccess }) {
                 value={type}
                 onChangeText={setType}
             />
-            <Button title="Create Activity" onPress={createActivity} />
-            <Button title="Cancel" color='#ff4034' onPress={onActivitySuccess} />
+            <Pressable style={[styles.button, {backgroundColor: '#28a745', marginTop: 10 }]} onPress={createActivity}>
+                <Text style={{color: 'white', fontWeight: '600'}}>Create Activity</Text>
+            </Pressable>
+            <Pressable style={[styles.button, {backgroundColor: '#ff4034'}]} onPress={onActivitySuccess}>
+                <Text style={{color: 'white', fontWeight: '600'}}>Cancel</Text>
+            </Pressable>
         </View>
     );
 }
@@ -72,13 +77,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#BAF1FF',
     },
     input: {
-        width: Dimensions.get('window').width - 40,
+        width: Dimensions.get('window').width * 0.9 - 40,
         padding: 10,
         margin: 5,
         borderWidth: 1,
         borderColor: 'black',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        backgroundColor: 'white',
     },
     title: {
         fontSize: 24,
@@ -87,8 +97,18 @@ const styles = StyleSheet.create({
     heading: {
         textAlign: 'center',
         fontSize: 16,
-        marginBottom: -7,
+        marginBottom: 1,
         marginTop: 5,
         width: 300,
-      },
+    },
+    header: {
+        width: Dimensions.get('window').width * 0.9,
+        backgroundColor: '#4bb5e3',
+    },
+    button: {
+        alignItems: 'center', 
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 10,
+    },
 });

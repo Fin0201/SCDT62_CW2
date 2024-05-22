@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, Button, View, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, Pressable, View, Alert, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Appbar } from 'react-native-paper';
 
 export default function Login({ navigation, route }) {
   const [email, setEmail] = useState('');
@@ -57,30 +58,39 @@ export default function Login({ navigation, route }) {
  
   return (
 <View style={styles.container}>
-<Text>Login</Text>
-      {errorMessages.map((errorMessage, index) => (
-<Text key={index} style={styles.errorText}>{errorMessage}</Text>
-      ))}
-      {loginSuccess && (
-<Text style={styles.successText}>Login successful!</Text>
-      )}
-<TextInput
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-        keyboardType="email-address"
-      />
-<TextInput
-        style={styles.input}
-        placeholder="Password"
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-        secureTextEntry
-      />
-<Button title="Login" onPress={handleLogin} />
-<Text style={styles.linkText}>Don't have an account?</Text>
-<Button title="Register" onPress={() => navigation.navigate('Register')} />
+  <Appbar.Header style={styles.header}>
+    <Appbar.Content title="Register" />
+  </Appbar.Header>
+  <Text style={styles.heading}>Login</Text>
+        {errorMessages.map((errorMessage, index) => (
+  <Text key={index} style={styles.errorText}>{errorMessage}</Text>
+        ))}
+        {loginSuccess && (
+  <Text style={styles.successText}>Login successful!</Text>
+        )}
+  <TextInput
+          style={styles.input}
+          placeholder="Email"
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+          keyboardType="email-address"
+        />
+  <TextInput
+          style={styles.input}
+          placeholder="Password"
+          onChangeText={(text) => setPassword(text)}
+          value={password}
+          secureTextEntry
+        />
+  <Pressable style={[styles.button, {backgroundColor: '#28a745'}]} onPress={handleLogin}>
+    <Text style={{color: 'white', fontWeight: '600'}}>Login</Text>
+  </Pressable>
+  <View style={{marginTop: 20, marginBottom: 5}}>
+    <Text style={{textDecorationLine: 'underline'}}>Don't have an account?</Text>
+  </View>
+  <Pressable style={[styles.button, {backgroundColor: 'orange'}]} onPress={() => navigation.navigate('Register')}>
+    <Text style={{color: 'white', fontWeight: '600'}}>Register</Text>
+  </Pressable>
 </View>
   );
 }
@@ -88,9 +98,8 @@ export default function Login({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#BAF1FF',
   },
   input: {
     borderWidth: 1,
@@ -98,7 +107,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-    width: '100%',
+    width: '90%',
+    backgroundColor: 'white',
   },
   errorText: {
     color: 'red',
@@ -108,7 +118,20 @@ const styles = StyleSheet.create({
     color: 'green',
     marginBottom: 10,
   },
-  linkText: {
-    textDecorationLine: 'underline',
+  header: {
+    width: Dimensions.get('window').width,
+    backgroundColor: '#4bb5e3',
+  },
+  heading: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginBottom: 3,
+    marginTop: 30,
+    width: 300,
+  },
+  button: {
+    alignItems: 'center', 
+    borderRadius: 10,
+    padding: 10,
   },
 });

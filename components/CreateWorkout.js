@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Button, ScrollView, Dimensions, TextInput, Alert } from 'react-native';
+import { Text, View, StyleSheet, Pressable, ScrollView, Dimensions, TextInput, Alert } from 'react-native';
 import { Card } from 'react-native-elements';
-import FlashMessage, { showMessage } from "react-native-flash-message";
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
 
 export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState('');
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState('');
 
   useEffect(() => {
     fetchActivities();
@@ -49,6 +49,8 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
           }),
       });
 
+      console.log(JSON.stringify({ activityID: selectedActivity.id, duration: duration }));
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -76,11 +78,9 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
           <Text style={{ fontSize: 16, textAlign: 'center' }}>Type: {val.type}</Text>
         </View>
         <View style={{ justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20 }}>
-          <Button
-            title={selectedActivity === val ? 'Selected' : 'Select Activity'}
-            onPress={() => { setSelectedActivity(val); }}
-            color={selectedActivity === val ? '#28a745' : '#007BFF'}
-          />
+          <Pressable onPress={() => { setSelectedActivity(val); }} style={[styles.button, { backgroundColor: selectedActivity.id === val.id ? '#28a745' : '#007BFF' }]}>
+            <Text style={{ color: 'white', fontWeight: '600' }}>{selectedActivity.id === val.id ? 'Selected' : 'Select Activity'}</Text>
+          </Pressable>
         </View>
       </Card>
     </View>
@@ -89,7 +89,7 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
   return (
     <View style={styles.container}>
       <Appbar.Header style={styles.header}>
-        <Appbar.Content title="Workout Creation" titleStyle={{alignSelf: 'center'}} />               
+        <Appbar.Content title="Create Workout" titleStyle={{alignSelf: 'center'}} />               
       </Appbar.Header>
       <ScrollView style={styles.scroll}>
         {activitiesMap}
@@ -97,20 +97,24 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
       <Text style={styles.heading}>Duration in minutes</Text>
       <TextInput
         style={styles.input}
-        placeholder="Duration in minutes"
-        value={duration.toString()}
-        onChangeText={setDuration}
-        keyboardType="numeric"
+        placeholder="Duration"
+        value={duration}
+        onChangeText={(text) => {
+          // Only update the duration if the new text is an integer
+          if (/^\d+$/.test(text) || text === '') {
+            setDuration(text);
+          }
+        }}
       />
       <View style={{ marginVertical: 10 }}>
-        <Button 
-          title={selectedActivity ? `Create ${selectedActivity.name} Workout` : "Create Workout"} 
-          onPress={createWorkout} 
-          color={selectedActivity ? '#28a745' : 'gray'}
-        />
+        <Pressable onPress={createWorkout} style={[styles.button, { backgroundColor: selectedActivity ? '#28a745' : 'gray' } ]}>
+          <Text style={{ color: 'white', fontWeight: '600' }}>{selectedActivity ? `Create ${selectedActivity.name} Workout` : "Create Workout"}</Text>
+        </Pressable>
       </View>
       <View style={{ marginBottom: 10 }}>
-        <Button title="Cancel" color='#ff4034' onPress={onWorkoutSuccess} />
+        <Pressable onPress={onWorkoutSuccess} style={[styles.button, { backgroundColor: '#ff4034' }]}>
+          <Text style={{ color: 'white', fontWeight: '600' }}>Cancel</Text>
+        </Pressable>
       </View>
       <FlashMessage position="top" />
     </View>
@@ -140,32 +144,39 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   scroll: {
-    width: Dimensions.get('window').width,
+    width: '100%',
   },
   itemContainer: {
-    borderWidth: 2, 
+    borderWidth: 1, 
     borderRadius: 16,
+    backgroundColor: '#c2fff8',
+    borderColor: '#47504f',
   },
   heading: {
     textAlign: 'center',
     fontSize: 16,
-    marginBottom: -7,
+    marginBottom: 1,
     marginTop: 5,
     width: 300,
   },
+  button: {
+    alignItems: 'center', 
+    borderRadius: 10,
+    padding: 10,
+  },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    width: Dimensions.get('window').width * 0.9 - 40,
+    padding: 10,
+    margin: 5,
     borderWidth: 1,
-    width: '80%',
-    marginVertical: 10,
-    paddingHorizontal: 10,
+    borderColor: 'black',
     borderRadius: 5,
-    textAlign: 'center',
+    padding: 10,
+    marginBottom: 10,
     backgroundColor: 'white',
   },
   header: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('window').width * 0.9,
     backgroundColor: '#4bb5e3',
   },
 });

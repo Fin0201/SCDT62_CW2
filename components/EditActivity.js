@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Button, Alert, ScrollView, Dimensions } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Pressable, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { Appbar } from 'react-native-paper';
 
 export default function EditActivity({ selectedActivity, onActivitySuccess }) {
     const [name, setName] = useState(selectedActivity.name);
     const [description, setDescription] = useState(selectedActivity.description);
     const [type, setType] = useState(selectedActivity.type);
-
-    const [activitySuccess, setActivitySuccess] = useState(false);
     
     const editActivity = async () => {
         try {
@@ -28,7 +27,6 @@ export default function EditActivity({ selectedActivity, onActivitySuccess }) {
                 throw new Error(data.message || 'Edit failed');
             }
 
-            setActivitySuccess(true);
             showMessage({
                 message: 'Activity edited successfully',
                 type: 'success',
@@ -37,7 +35,6 @@ export default function EditActivity({ selectedActivity, onActivitySuccess }) {
             onActivitySuccess();
         } catch (error) {
             console.error('Edit error:', error);
-            setActivitySuccess(false);
             showMessage({
                 message: 'Failed to edit activity',
                 type: 'danger',
@@ -47,7 +44,9 @@ export default function EditActivity({ selectedActivity, onActivitySuccess }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Edit Activity</Text>
+            <Appbar.Header style={styles.header}>
+                <Appbar.Content title="Edit Activity" titleStyle={{alignSelf: 'center'}} />               
+            </Appbar.Header>
             <Text style={styles.heading}>Name</Text>
             <TextInput
                 style={styles.input}
@@ -69,7 +68,12 @@ export default function EditActivity({ selectedActivity, onActivitySuccess }) {
                 onChangeText={setType}
                 defaultValue={selectedActivity.type}
             />
-            <Button title="Save" onPress={editActivity} />
+            <Pressable style={[styles.button, {backgroundColor: '#28a745'}]} onPress={editActivity}>
+                <Text style={{color: 'white', fontWeight: '600'}}>Save</Text>
+            </Pressable>
+            <Pressable style={[styles.button, {backgroundColor: '#ff4034'}]} onPress={onActivitySuccess}>
+                <Text style={{color: 'white', fontWeight: '600'}}>Cancel</Text>
+            </Pressable>
             <Button title="Cancel" color='#ff4034' onPress={onActivitySuccess} />
         </View>
     );
@@ -82,11 +86,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     input: {
-        height: 40,
-        width: Dimensions.get('window').width - 40,
-        margin: 12,
-        borderWidth: 1,
+        width: Dimensions.get('window').width * 0.9 - 40,
         padding: 10,
+        margin: 5,
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        backgroundColor: 'white',
     },
     itemContainer: {
         borderWidth: 2, 
@@ -99,8 +107,17 @@ const styles = StyleSheet.create({
     heading: {
         textAlign: 'center',
         fontSize: 16,
-        marginBottom: -7,
+        marginBottom: 1,
         marginTop: 5,
         width: 300,
+    },
+    header: {
+        width: Dimensions.get('window').width * 0.9,
+        backgroundColor: '#4bb5e3',
+    },
+    button: {
+        alignItems: 'center', 
+        borderRadius: 10,
+        padding: 10,
     },
 });

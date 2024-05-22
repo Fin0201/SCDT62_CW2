@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Button, ScrollView, Dimensions, TextInput } from 'react-native';
+import { Text, View, StyleSheet, Pressable, ScrollView, Dimensions, TextInput, Alert } from 'react-native';
 import { Card, Overlay } from 'react-native-elements';
-import FlashMessage from "react-native-flash-message";
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
 
 export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess }) {
@@ -46,7 +46,6 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
           throw new Error(data.message || 'Edit failed');
       }
 
-      setWorkoutSuccess(true);
       showMessage({
           message: 'Workout edited successfully',
           type: 'success',
@@ -54,6 +53,7 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
 
       onWorkoutSuccess();
     } catch (error) {
+      console.error('Edit error:', error);
       Alert.alert('Error', error.message);
     }
   };
@@ -76,11 +76,9 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
           <Text style={{ fontSize: 16, textAlign: 'center' }}>Type: {val.type}</Text>
         </View>
         <View style={{ justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20 }}>
-          <Button
-            title={selectedActivity.id === val.id ? 'Selected' : 'Select Activity'}
-            onPress={() => { setSelectedActivity(val); }}
-            color={selectedActivity.id === val.id ? '#28a745' : '#007BFF'}
-          />
+          <Pressable onPress={() => setSelectedActivity(val)} style={[styles.button, { backgroundColor: selectedActivity.id === val.id ? '#28a745' : '#007BFF' }]}>
+            <Text style={{ color: 'white', fontWeight: '600' }}>{selectedActivity.id === val.id ? 'Selected' : 'Select Activity'}</Text>
+          </Pressable>
         </View>
       </Card>
     </View>
@@ -91,26 +89,30 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
       <Appbar.Header style={styles.header}>
         <Appbar.Content title="Edit Workout" titleStyle={{alignSelf: 'center'}} />               
       </Appbar.Header>
-      <ScrollView style={styles.scrolling}>
+      <ScrollView style={styles.scroll}>
         {activitiesMap}
       </ScrollView>
       <Text style={styles.heading}>Duration in minutes</Text>
       <TextInput
           style={styles.input}
           placeholder="Duration in minutes"
-          defaultValue={selectedWorkout.duration.toString()}
-          onChangeText={setDuration}
-          keyboardType="numeric"
+          defaultValue={selectedWorkout.duration}
+          onChangeText={(text) => {
+            // Only update the duration if the new text is an integer
+            if (/^\d+$/.test(text) || text === '') {
+              setDuration(text);
+            }
+          }}
       />
       <View style={{ marginVertical: 10 }}>
-        <Button 
-          title={selectedActivity ? `Save ${selectedActivity.name} Workout` : "Save Workout"} 
-          onPress={editWorkout} 
-          color={selectedActivity ? '#28a745' : 'gray'}
-        />
+        <Pressable onPress={editWorkout} style={[styles.button, { backgroundColor: selectedActivity ? '#28a745' : 'gray' } ]}>
+          <Text style={{ color: 'white', fontWeight: '600' }}>Save Workout</Text>
+        </Pressable>
       </View>
       <View style={{ marginBottom: 10 }}>
-        <Button title="Cancel" color='#ff4034' onPress={onWorkoutSuccess} />
+        <Pressable onPress={onWorkoutSuccess} style={[styles.button, { backgroundColor: '#ff4034' }]}>
+          <Text style={{ color: 'white', fontWeight: '600' }}>Cancel</Text>
+        </Pressable>
       </View>
       <FlashMessage position="top" />
     </View>
@@ -139,33 +141,40 @@ const styles = StyleSheet.create({
   itemContainer: {
     width: '100%',
   },
-  scrolling: {
+  scroll: {
     width: '100%',
   },
   itemContainer: {
-    borderWidth: 2, 
+    borderWidth: 1, 
     borderRadius: 16,
+    backgroundColor: '#c2fff8',
+    borderColor: '#47504f',
   },
   heading: {
     textAlign: 'center',
     fontSize: 16,
-    marginBottom: -7,
+    marginBottom: 1,
     marginTop: 5,
     width: 300,
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    width: Dimensions.get('window').width * 0.9 - 40,
+    padding: 10,
+    margin: 5,
     borderWidth: 1,
-    width: '80%',
-    marginVertical: 10,
-    paddingHorizontal: 10,
+    borderColor: 'black',
     borderRadius: 5,
-    textAlign: 'center',
+    padding: 10,
+    marginBottom: 10,
     backgroundColor: 'white',
   },
   header: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('window').width * 0.9,
     backgroundColor: '#4bb5e3',
+  },
+  button: {
+    alignItems: 'center', 
+    borderRadius: 10,
+    padding: 10,
   },
 });

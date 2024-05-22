@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,7 +14,7 @@ export default function Home({ navigation }) {
     const [index, setIndex] = useState(0);
 
     const [routes] = useState([
-        { key: 'activities', title: 'Activities', icon: 'run' },
+        { key: 'activities', title: 'Activities', icon: 'run'},
         { key: 'workouts', title: 'Workouts', icon: 'dumbbell' },
     ]);
 
@@ -59,9 +59,9 @@ export default function Home({ navigation }) {
     return (
         <SafeAreaProvider>
             <View style={styles.logoutButton}>
-                <TouchableOpacity onPress={logoutConfirm}>
+                <Pressable onPress={logoutConfirm}>
                     <MaterialCommunityIcons name="logout" size={24} color="black" />
-                </TouchableOpacity>
+                </Pressable>
             </View>
             <View style={styles.container}>
                 <BottomNavigation
@@ -70,6 +70,9 @@ export default function Home({ navigation }) {
                     renderScene={renderScene}
                     shifting={false}
                     barStyle={{ backgroundColor: '#4bb5e3' }}
+                    activeColor='black'
+                    inactiveColor='#636363'
+                    theme={{colors: {secondaryContainer: 'white'}}}
                     renderIcon={({ route, color }) => (
                         <MaterialCommunityIcons name={route.icon} color={color} size={24} />
                     )}

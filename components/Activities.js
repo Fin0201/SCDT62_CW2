@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Button, ScrollView, Dimensions } from 'react-native';
-import { getUser } from '../AppStorage';
+import { Text, View, StyleSheet, Pressable, ScrollView, Dimensions } from 'react-native';
 import { Card, Overlay } from 'react-native-elements';
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
 import alert from './alert';
 import CreateActivity from './CreateActivity';
 import EditActivity from './EditActivity';
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 export default function ActivitiesContent() {
   const [loading, setLoading] = useState(true);
@@ -86,13 +88,17 @@ export default function ActivitiesContent() {
           <Card key={key} style={styles.item} containerStyle={styles.itemContainer}>
               <Card.Title h4>{val.name}</Card.Title>
               <Card.Divider />
-              <View style={{textAlign: 'center', justifyContent: 'flex-start'}}>
-                <Text style={{fontSize: 16}}>Description: {val.description}</Text>
-                <Text style={{fontSize: 16}}>Type: {val.type}</Text>
+              <View style={{ textAlign: 'center', justifyContent: 'flex-start' }}>
+                <Text style={{ fontSize: 16, textAlign: 'center' }}>Description: {val.description}</Text>
+                <Text style={{ fontSize: 16, textAlign: 'center' }}>Type: {val.type}</Text>
               </View>
               <View style={{justifyContent: 'space-evenly', flexDirection: 'row', marginTop: 20}}>
-                <Button title="Edit Activity" color='orange' onPress={() => {setSelectActivity(val); setShowEdit(true)}} /> 
-                <Button title="Delete Activity" color='#ff4034' onPress={() => deleteConfirm(val)} />
+                <Pressable style={[styles.button, {backgroundColor: 'orange'}]} onPress={() => {setSelectActivity(val); setShowEdit(true)}}>
+                  <Text style={{color: 'white', fontWeight: '600'}}>Edit Activity</Text>
+                </Pressable>
+                <Pressable style={[styles.button, {backgroundColor: '#ff4034'}]} onPress={() => deleteConfirm(val)}>
+                  <Text style={{color: 'white', fontWeight: '600'}}>Delete Activity</Text>
+                </Pressable>
               </View>
           </Card>
       </View>
@@ -104,15 +110,15 @@ export default function ActivitiesContent() {
         <Appbar.Header style={styles.header}>
            <Appbar.Content title="Activities" />               
         </Appbar.Header>
-        <Overlay isVisible={showCreate} onBackdropPress={() => setShowCreate(false)}>
+        <Overlay isVisible={showCreate} onBackdropPress={() => setShowCreate(false)} overlayStyle={{ padding: 0, maxWidth: screenWidth*0.9, maxHeight: screenHeight*0.9 }}>
           <CreateActivity onActivitySuccess={() => { fetchActivities(); setShowCreate(false) }} />
         </Overlay>
-        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)}>
+        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)} overlayStyle={{ padding: 0, maxWidth: screenWidth*0.9, maxHeight: screenHeight*0.9 }}>
           <EditActivity selectedActivity={selectActivity} onActivitySuccess={() => { fetchActivities(); setShowEdit(false) }} />
         </Overlay>
-        <View style={styles.createButton}>
-          <Button title="Create" color='#4bb543' onPress={() => setShowCreate(true)} />
-        </View>
+        <Pressable style={[styles.button, styles.createButton]} onPress={() => setShowCreate(true)}>
+          <Text style={{color: 'white', fontWeight: '600'}}>Create Activity</Text>
+        </Pressable>
         <ScrollView style={styles.scroll}>
           {activitiesMap}
         </ScrollView>
@@ -138,15 +144,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   header: {
-    width: Dimensions.get('window').width,
+    width: screenWidth,
     backgroundColor: '#4bb5e3',
   },
   scroll: {
-    width: Dimensions.get('window').width,
+    width: '100%',
+  },
+  item: {
+    marginBottom: 20,
+  },
+  itemContainer: {
+    borderWidth: 1, 
+    borderRadius: 16,
+    backgroundColor: '#c2fff8',
+    borderColor: '#47504f',
   },
   createButton: {
+    backgroundColor: '#4bb543',
     marginTop: 30,
     marginBottom: 10,
     width: 300,
+  },
+  button: {
+    alignItems: 'center', 
+    borderRadius: 10,
+    padding: 10,
   },
 });
