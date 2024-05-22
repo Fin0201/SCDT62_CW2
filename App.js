@@ -14,6 +14,7 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState([]);
+  const [userFound, setUserFound] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,11 +23,15 @@ export default function App() {
       if (userAccount) {
         console.log('User found');
         setUser(userAccount);
+        setUserFound(true)
       }
       setLoading(false);
     };
     fetchUser();
+
+    console.log(user)
   }, []);
+
 
   if (loading) {
     <View style={styles.loadingContainer}>
@@ -35,9 +40,8 @@ export default function App() {
   }
   
   return (
-    console.log(user),
     <NavigationContainer>
-      {user == [] ? (
+      {!userFound ? (
         <Stack.Navigator initialRouteName='Register' screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Login" component={Login} />

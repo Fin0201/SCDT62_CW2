@@ -91,7 +91,7 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
       <Appbar.Header style={styles.header}>
         <Appbar.Content title="Workout Creation" titleStyle={{alignSelf: 'center'}} />               
       </Appbar.Header>
-      <ScrollView style={styles.scrolling}>
+      <ScrollView style={styles.scroll}>
         {activitiesMap}
       </ScrollView>
       <Text style={styles.heading}>Duration in minutes</Text>
@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
   itemContainer: {
     width: '100%',
   },
-  scrolling: {
-    width: '100%',
+  scroll: {
+    width: Dimensions.get('window').width,
   },
   itemContainer: {
     borderWidth: 2, 
