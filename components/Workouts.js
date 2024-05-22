@@ -6,8 +6,8 @@ import FlashMessage, { showMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
 import alert from './alert';
 
-import CreateWorkoutActivity from './CreateWorkoutActivity';
-import EditWorkoutActivity from './EditWorkoutActivity';
+import CreateWorkout from './CreateWorkout';
+import EditWorkout from './EditWorkout';
 
 export default function WorkoutsContent() {
   const [loading, setLoading] = useState(true);
@@ -106,11 +106,11 @@ export default function WorkoutsContent() {
         <Appbar.Header style={styles.header}>
           <Appbar.Content title="Workouts" />
         </Appbar.Header>
-        <Overlay isVisible={showSelectActivity} onBackdropPress={() => setShowSelectActivity(false)}>
-          <CreateWorkoutActivity onWorkoutSuccess={() => { fetchWorkouts(); setShowSelectActivity(false) }} />
+        <Overlay isVisible={showSelectActivity} onBackdropPress={() => setShowSelectActivity(false)} overlayStyle={{ padding: 0 }}>
+          <CreateWorkout onWorkoutSuccess={() => { fetchWorkouts(); setShowSelectActivity(false) }} />
         </Overlay>
-        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)}>
-          <EditWorkoutActivity selectedWorkout={selectWorkout} onWorkoutSuccess={() => { fetchWorkouts(); setShowEdit(false) }} />
+        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)} overlayStyle={{ padding: 0 }}>
+          <EditWorkout selectedWorkout={selectWorkout} onWorkoutSuccess={() => { fetchWorkouts(); setShowEdit(false) }} />
         </Overlay>
         <View style={styles.createButton}>
           <Button title="Create" color='#4bb543' onPress={() => setShowSelectActivity(true)} />
