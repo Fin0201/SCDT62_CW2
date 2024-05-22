@@ -113,7 +113,7 @@ export default function ActivitiesContent() {
         <Overlay isVisible={showCreate} onBackdropPress={() => setShowCreate(false)} overlayStyle={{ padding: 0, maxWidth: screenWidth*0.9, maxHeight: screenHeight*0.9 }}>
           <CreateActivity onActivitySuccess={() => { fetchActivities(); setShowCreate(false) }} />
         </Overlay>
-        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)} overlayStyle={{ padding: 0, maxWidth: screenWidth*0.9, maxHeight: screenHeight*0.9 }}>
+        <Overlay isVisible={showEdit} onBackdropPress={() => setShowEdit(false)} overlayStyle={{ padding: 0, width: screenWidth*0.9, maxHeight: screenHeight*0.9 }}>
           <EditActivity selectedActivity={selectActivity} onActivitySuccess={() => { fetchActivities(); setShowEdit(false) }} />
         </Overlay>
         <Pressable style={[styles.button, styles.createButton]} onPress={() => setShowCreate(true)}>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     borderWidth: 1, 
     borderRadius: 16,
-    backgroundColor: '#c2fff8',
+    backgroundColor: '#d9fcff',
     borderColor: '#47504f',
   },
   createButton: {

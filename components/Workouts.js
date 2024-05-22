@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     borderWidth: 1, 
     borderRadius: 16,
-    backgroundColor: '#c2fff8',
+    backgroundColor: '#d9fcff',
     borderColor: '#47504f',
   },
   input: {

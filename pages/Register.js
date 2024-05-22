@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, Pressable, View, Alert, Dimensions } from 'react-native';
+import { StyleSheet, Text, TextInput, Pressable, View, Dimensions } from 'react-native';
 import { Appbar } from 'react-native-paper';
+import alert from '../components/alert';
  
 export default function RegisterScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');
@@ -8,7 +9,6 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessages, setErrorMessages] = useState([]);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
  
   const handleRegister = async () => {
     try {
@@ -26,11 +26,9 @@ export default function RegisterScreen({ navigation }) {
         throw new Error(data.message || 'Registration failed');
       }
  
-      setRegistrationSuccess(true); // Set registration success state
       navigation.navigate('Login', { message: 'Registration successful! You can now login.' });
     } catch (error) {
       console.error('Registration error:', error);
-      setRegistrationSuccess(false); // Reset registration success state
       setErrorMessages([]);
  
       if (error instanceof SyntaxError) {
@@ -46,7 +44,7 @@ export default function RegisterScreen({ navigation }) {
         setErrorMessages(['Unknown error occurred']);
       }
  
-      Alert.alert('Error', 'Failed to register');
+      alert('Error', 'Failed to register');
     }
   };
  
@@ -59,9 +57,6 @@ export default function RegisterScreen({ navigation }) {
               {errorMessages.map((errorMessage, index) => (
         <Text key={index} style={styles.errorText}>{errorMessage}</Text>
               ))}
-              {registrationSuccess && (
-        <Text style={styles.successText}>Registration successful! You can now login.</Text>
-              )}
         <TextInput
                 style={styles.input}
                 placeholder="First Name"

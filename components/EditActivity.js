@@ -68,13 +68,12 @@ export default function EditActivity({ selectedActivity, onActivitySuccess }) {
                 onChangeText={setType}
                 defaultValue={selectedActivity.type}
             />
-            <Pressable style={[styles.button, {backgroundColor: '#28a745'}]} onPress={editActivity}>
+            <Pressable style={[styles.button, { backgroundColor: '#28a745', marginTop: 10 }]} onPress={editActivity}>
                 <Text style={{color: 'white', fontWeight: '600'}}>Save</Text>
             </Pressable>
             <Pressable style={[styles.button, {backgroundColor: '#ff4034'}]} onPress={onActivitySuccess}>
                 <Text style={{color: 'white', fontWeight: '600'}}>Cancel</Text>
             </Pressable>
-            <Button title="Cancel" color='#ff4034' onPress={onActivitySuccess} />
         </View>
     );
 }
@@ -84,6 +83,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#BAF1FF',
     },
     input: {
         width: Dimensions.get('window').width * 0.9 - 40,
@@ -119,5 +119,6 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
         borderRadius: 10,
         padding: 10,
+        marginBottom: 10,
     },
 });

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Alert, Pressable, Dimensions } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Pressable, Dimensions } from 'react-native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
+import alert from './alert';
 
 export default function CreateActivity({ onActivitySuccess }) {
     const [name, setName] = useState('');
@@ -32,7 +33,7 @@ export default function CreateActivity({ onActivitySuccess }) {
 
             onActivitySuccess();
         } catch (error) {
-            Alert.alert('Error', error.message);
+            alert('Error', error.message);
         }
     };
 

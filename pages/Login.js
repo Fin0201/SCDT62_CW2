@@ -7,12 +7,11 @@ export default function Login({ navigation, route }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessages, setErrorMessages] = useState([]);
-  const [loginSuccess, setLoginSuccess] = useState(false);
 
-  // This will display an alert if a message is set when navigating to this screen
+  // Show success message when redirected from the register page
   useEffect(() => {
     if (route.params?.message) {
-      Alert.alert('Success', route.params.message);
+      alert('Success', route.params.message);
     }
   }, [route.params?.message]);
  
@@ -36,7 +35,6 @@ export default function Login({ navigation, route }) {
       navigation.navigate('Home');
     } catch (error) {
       console.error('Login error:', error);
-      setLoginSuccess(false); // Reset Login success state
       setErrorMessages([]);
  
       if (error instanceof SyntaxError) {
@@ -52,22 +50,19 @@ export default function Login({ navigation, route }) {
         setErrorMessages(['Unknown error occurred']);
       }
  
-      Alert.alert('Error', 'Failed to Login');
+      alert('Error', 'Failed to Login');
     }
   };
  
   return (
 <View style={styles.container}>
   <Appbar.Header style={styles.header}>
-    <Appbar.Content title="Register" />
+    <Appbar.Content title="Login" />
   </Appbar.Header>
   <Text style={styles.heading}>Login</Text>
         {errorMessages.map((errorMessage, index) => (
   <Text key={index} style={styles.errorText}>{errorMessage}</Text>
         ))}
-        {loginSuccess && (
-  <Text style={styles.successText}>Login successful!</Text>
-        )}
   <TextInput
           style={styles.input}
           placeholder="Email"

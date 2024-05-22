@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Pressable, ScrollView, Dimensions, TextInput, Alert } from 'react-native';
+import { Text, View, StyleSheet, Pressable, ScrollView, Dimensions, TextInput } from 'react-native';
 import { Card, Overlay } from 'react-native-elements';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { Appbar } from 'react-native-paper';
+import alert from './alert';
 
 export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess }) {
   const [loading, setLoading] = useState(true);
@@ -54,7 +55,7 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
       onWorkoutSuccess();
     } catch (error) {
       console.error('Edit error:', error);
-      Alert.alert('Error', error.message);
+      alert('Error', error.message);
     }
   };
 
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     borderWidth: 1, 
     borderRadius: 16,
-    backgroundColor: '#c2fff8',
+    backgroundColor: '#d9fcff',
     borderColor: '#47504f',
   },
   heading: {
