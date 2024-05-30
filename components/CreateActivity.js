@@ -9,6 +9,7 @@ export default function CreateActivity({ onActivitySuccess }) {
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
     
+    // Creates a new activity using the API
     const createActivity = async () => {
         try {
             console.log(JSON.stringify({ name, description, type }))

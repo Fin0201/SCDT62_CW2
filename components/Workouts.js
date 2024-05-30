@@ -52,6 +52,7 @@ export default function WorkoutsContent() {
     ]);
   }
 
+  // Delete a workout
   const deleteWorkout = async (workoutId) => {
     try {
       const response = await fetch(`https://localhost:7267/api/workouts/${workoutId}`, {

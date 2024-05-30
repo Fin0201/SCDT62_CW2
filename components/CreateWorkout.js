@@ -29,6 +29,7 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
     }
   };
 
+  // Display a loading message while fetching activities
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -37,6 +38,7 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
     );
   }
 
+  // Create a new workout
   const createWorkout = async () => {
     try {
       const response = await fetch('https://localhost:7267/api/workouts', {
@@ -69,6 +71,7 @@ export default function CreateWorkoutActivity({ onWorkoutSuccess }) {
     }
   };
 
+  // Map each activity to a card
   const activitiesMap = activities.map((val, key) => (
     <View key={key}> 
       <Card key={key} style={styles.item} containerStyle={styles.itemContainer}>

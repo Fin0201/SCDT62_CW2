@@ -8,6 +8,7 @@ export default function EditActivity({ selectedActivity, onActivitySuccess }) {
     const [description, setDescription] = useState(selectedActivity.description);
     const [type, setType] = useState(selectedActivity.type);
     
+    // Edits the activity with the new data
     const editActivity = async () => {
         try {
             const response = await fetch(`https://localhost:7267/api/activities/${selectedActivity.id}`, {

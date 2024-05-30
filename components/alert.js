@@ -1,4 +1,5 @@
 // Platform independent alert component
+// The normal Alert does not work when testing on web
 import { Alert, Platform } from 'react-native'
 
 const alertPolyfill = (title, description, options, extra) => {

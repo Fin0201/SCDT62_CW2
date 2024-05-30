@@ -13,6 +13,7 @@ export default function Home({ navigation }) {
     const [user, setUser] = useState([]);
     const [index, setIndex] = useState(0);
 
+    // Set routes and icons for the bottom navigation
     const [routes] = useState([
         { key: 'activities', title: 'Activities', icon: 'run'},
         { key: 'workouts', title: 'Workouts', icon: 'dumbbell' },
@@ -23,6 +24,7 @@ export default function Home({ navigation }) {
         workouts: Workouts,
     });
 
+    // Log out confirmation
     const logoutConfirm = () => {
         alert(
             "Logout",
@@ -34,6 +36,7 @@ export default function Home({ navigation }) {
         );
     }
 
+    // Logout user
     const logoutUser = async () => {
         let response = await fetch('https://localhost:7267/api/auth/Logout', {
             method: 'POST',

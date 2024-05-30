@@ -30,8 +30,10 @@ export default function Login({ navigation, route }) {
         throw new Error(data.message || 'Login failed');
       }
       
+      // Store user data in local storage
       await AsyncStorage.setItem('user', JSON.stringify(data));
 
+      // Redirect to home page
       navigation.navigate('Home');
     } catch (error) {
       console.error('Login error:', error);

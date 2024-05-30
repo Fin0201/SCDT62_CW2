@@ -35,12 +35,14 @@ export default function ActivitiesContent() {
     }
   };
 
+  // Display a loading message while fetching activities
   if (loading) {
     <View style={styles.loadingContainer}>
       <Text style={styles.loadingText}>Loading...</Text>
     </View>
   }
 
+  // Confirm before deleting an activity
   const deleteConfirm = (val) => {
     alert(
       "Are you sure?",
@@ -51,6 +53,7 @@ export default function ActivitiesContent() {
     ]);
   }
 
+  // Delete an activity
   const deleteActivity = async (activityId) => {
     try {
       const response = await fetch(`https://localhost:7267/api/activities/${activityId}`, {
@@ -82,6 +85,7 @@ export default function ActivitiesContent() {
     }
   }
 
+  // Map each activity to a card
   let activitiesMap = activities.map((val, key) => {
     return (
       <View key={key}> 

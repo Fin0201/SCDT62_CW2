@@ -29,6 +29,7 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
     }
   };
 
+  // Edits the workout with the new data
   const editWorkout = async () => {
     try {
       const response = await fetch(`https://localhost:7267/api/workouts/${selectedWorkout.id}`, {
@@ -59,6 +60,7 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
     }
   };
 
+  // If the activities are still loading, display a loading message
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -67,6 +69,7 @@ export default function EditWorkoutActivity({ selectedWorkout, onWorkoutSuccess 
     );
   }
 
+  // Map the activities to a list of cards
   const activitiesMap = activities.map((val, key) => (
     <View key={key}> 
       <Card key={key} style={styles.item} containerStyle={styles.itemContainer}>

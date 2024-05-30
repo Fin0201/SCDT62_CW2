@@ -10,6 +10,7 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [errorMessages, setErrorMessages] = useState([]);
  
+  // Attempt to register the user
   const handleRegister = async () => {
     try {
       const response = await fetch('https://localhost:7267/api/auth/Register', {
@@ -26,6 +27,7 @@ export default function RegisterScreen({ navigation }) {
         throw new Error(data.message || 'Registration failed');
       }
  
+      // Redirect to login page with success message
       navigation.navigate('Login', { message: 'Registration successful! You can now login.' });
     } catch (error) {
       console.error('Registration error:', error);
